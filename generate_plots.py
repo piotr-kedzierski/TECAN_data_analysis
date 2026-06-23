@@ -213,8 +213,8 @@ def main():
     p.add_argument("--file-name", type=str)
     args = p.parse_args()
 
-    if not args.file_name and not args.input:
-        input = pathlib.Path(__file__).parent.resolve()
+    if (not args.file_name) and (not args.input):
+        args.input = pathlib.Path(__file__).parent.resolve()
 
     if args.file_name and args.input:
         print("You can choose only one out of the two: input directory OR file name.")
@@ -247,9 +247,10 @@ def main():
                     print(f"Couldnt process file {file} with exception {e}")
 
         elif args.variant == "LuxByOd":
-            xlsx_files = args.input.rglob("*.xlsx")
+            xlsx_files = list(args.input.rglob("*.xlsx"))
 
-            if not list(xlsx_files):
+
+            if len(xlsx_files) == 0:
                 print("No .xlsx files found in your directory and no cutom directory was provided.")
                 sys.exit(1)
 
@@ -262,13 +263,14 @@ def main():
                 except Exception as e:
                     print(f"Couldnt process file {file} with exception {e}")
         else:
-            xlsx_files = args.input.rglob("*.xlsx")
+            xlsx_files = list(args.input.rglob("*.xlsx"))
 
-            if not list(xlsx_files):
+            if len(xlsx_files) == 0:
                 print("No .xlsx files found in your directory and no cutom directory was provided.")
                 sys.exit(1)
 
             args.out.mkdir(exist_ok=True, parents=True)
+
 
             for file in xlsx_files:
                 try:
